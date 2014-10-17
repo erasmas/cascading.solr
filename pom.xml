@@ -35,7 +35,7 @@
 	
     <properties>
         <cascading.version>2.1.6</cascading.version>
-        <hadoop.version>1.0.4</hadoop.version>
+        <hadoop.version>1.2.1</hadoop.version>
         <solr.version>4.2.1</solr.version>
     </properties>
     
