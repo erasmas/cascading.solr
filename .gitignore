@@ -9,6 +9,7 @@ build-eclipse
 src/gen
 build.sh
 *.iml
+.idea/
 *.dot
 *.hprof
 trash
