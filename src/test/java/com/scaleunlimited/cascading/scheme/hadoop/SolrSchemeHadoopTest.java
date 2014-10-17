@@ -1,10 +1,5 @@
 package com.scaleunlimited.cascading.scheme.hadoop;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Test;
-
 import cascading.flow.FlowConnector;
 import cascading.flow.FlowProcess;
 import cascading.flow.hadoop.HadoopFlowConnector;
@@ -18,8 +13,11 @@ import cascading.tap.hadoop.Hfs;
 import cascading.tuple.Fields;
 import cascading.tuple.hadoop.BytesSerialization;
 import cascading.tuple.hadoop.TupleSerializationProps;
-
 import com.scaleunlimited.cascading.scheme.core.AbstractSolrSchemeTest;
+import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SolrSchemeHadoopTest extends AbstractSolrSchemeTest {
 
@@ -95,7 +93,7 @@ public class SolrSchemeHadoopTest extends AbstractSolrSchemeTest {
         super.testIndexSink();
     }
 
-    @Test
+    //@Test
     public void testSimpleIndexing() throws Exception {
         super.testSimpleIndexing();
     }

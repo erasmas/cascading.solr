@@ -1,8 +1,7 @@
 package com.scaleunlimited.cascading.scheme.core;
 
-import java.io.File;
-import java.io.IOException;
-
+import cascading.tuple.Fields;
+import cascading.tuple.Tuple;
 import org.apache.hadoop.io.BytesWritable;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -11,8 +10,8 @@ import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.params.UpdateParams;
 import org.apache.solr.core.CoreContainer;
 
-import cascading.tuple.Fields;
-import cascading.tuple.Tuple;
+import java.io.File;
+import java.io.IOException;
 
 public abstract class SolrWriter {
 
@@ -40,12 +39,13 @@ public abstract class SolrWriter {
 
         // Fire up an embedded Solr server
         try {
-            System.setProperty("solr.solr.home", SolrSchemeUtil.makeTempSolrHome(solrCoreDir).getAbsolutePath());
+            final String solrHome = SolrSchemeUtil.makeTempSolrHome(solrCoreDir).getAbsolutePath();
+            System.setProperty("solr.solr.home", solrHome);
             System.setProperty(dataDirPropertyName, dataDir);
             System.setProperty("enable.special-handlers", "false"); // All we need is the update request handler
             System.setProperty("enable.cache-warming", "false"); // We certainly don't need to warm the cache
-            CoreContainer.Initializer initializer = new CoreContainer.Initializer();
-            _coreContainer = initializer.initialize();
+            _coreContainer = new CoreContainer(solrHome);
+            _coreContainer.load();
             _solrServer = new EmbeddedSolrServer(_coreContainer, solrCoreDir.getName());
         } catch (Exception e) {
             if (_coreContainer != null) {

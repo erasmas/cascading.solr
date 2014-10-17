@@ -1,5 +1,13 @@
 package com.scaleunlimited.cascading.scheme.core;
 
+import cascading.tap.TapException;
+import cascading.tuple.Fields;
+import org.apache.commons.io.FileUtils;
+import org.apache.solr.core.CoreContainer;
+import org.apache.solr.core.SolrCore;
+import org.apache.solr.schema.IndexSchema;
+import org.apache.solr.schema.SchemaField;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -7,15 +15,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.solr.core.CoreContainer;
-import org.apache.solr.core.SolrCore;
-import org.apache.solr.schema.IndexSchema;
-import org.apache.solr.schema.SchemaField;
-
-import cascading.tap.TapException;
-import cascading.tuple.Fields;
 
 public class SolrSchemeUtil {
 
@@ -60,19 +59,19 @@ public class SolrSchemeUtil {
         String tmpFolder = System.getProperty("java.io.tmpdir");
         File tmpDataDir = new File(tmpFolder, UUID.randomUUID().toString());
         tmpDataDir.mkdir();
-        
-        System.setProperty("solr.solr.home", tmpSolrHome.getAbsolutePath());
+
+        final String solrHome = tmpSolrHome.getAbsolutePath();
+        System.setProperty("solr.solr.home", solrHome);
         System.setProperty(dataDirPropertyName, tmpDataDir.getAbsolutePath());
         System.setProperty("enable.special-handlers", "false"); // All we need is the update request handler
         System.setProperty("enable.cache-warming", "false"); // We certainly don't need to warm the cache
-        
-        CoreContainer.Initializer initializer = new CoreContainer.Initializer();
-        CoreContainer coreContainer = null;
-        
+
+        CoreContainer coreContainer = new CoreContainer(solrHome);
+        coreContainer.load();
+
         try {
-            coreContainer = initializer.initialize();
             Collection<SolrCore> cores = coreContainer.getCores();
-            SolrCore core = null;
+            SolrCore core;
             
             if (cores.size() == 0) {
                 throw new TapException("No Solr cores are available");
@@ -82,7 +81,7 @@ public class SolrSchemeUtil {
                 core = cores.iterator().next();
             }
 
-            IndexSchema schema = core.getSchema();
+            IndexSchema schema = core.getLatestSchema();
             Map<String, SchemaField> solrFields = schema.getFields();
             Set<String> schemeFieldnames = new HashSet<String>();
 

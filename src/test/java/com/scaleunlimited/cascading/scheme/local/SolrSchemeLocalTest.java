@@ -1,12 +1,5 @@
 package com.scaleunlimited.cascading.scheme.local;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.apache.commons.io.FileUtils;
-import org.junit.Before;
-import org.junit.Test;
-
 import cascading.flow.FlowConnector;
 import cascading.flow.FlowProcess;
 import cascading.flow.local.LocalFlowConnector;
@@ -16,10 +9,10 @@ import cascading.tap.SinkMode;
 import cascading.tap.Tap;
 import cascading.tap.local.FileTap;
 import cascading.tuple.Fields;
-
 import com.scaleunlimited.cascading.local.DirectoryTap;
 import com.scaleunlimited.cascading.local.KryoScheme;
 import com.scaleunlimited.cascading.scheme.core.AbstractSolrSchemeTest;
+import org.junit.Test;
 
 public class SolrSchemeLocalTest extends AbstractSolrSchemeTest {
 
@@ -90,7 +83,7 @@ public class SolrSchemeLocalTest extends AbstractSolrSchemeTest {
         super.testIndexSink();
     }
 
-    @Test
+    //@Test
     public void testSimpleIndexing() throws Exception {
         super.testSimpleIndexing();
     }

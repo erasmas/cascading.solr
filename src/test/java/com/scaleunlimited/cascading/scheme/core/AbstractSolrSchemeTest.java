@@ -1,19 +1,5 @@
 package com.scaleunlimited.cascading.scheme.core;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.hadoop.io.BytesWritable;
-import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
-import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.common.params.CommonParams;
-import org.apache.solr.common.params.ModifiableSolrParams;
-import org.apache.solr.core.CoreContainer;
-import org.junit.Assert;
-import org.junit.Before;
-
 import cascading.flow.Flow;
 import cascading.flow.FlowConnector;
 import cascading.flow.FlowProcess;
@@ -26,9 +12,21 @@ import cascading.tap.TapException;
 import cascading.tuple.Fields;
 import cascading.tuple.Tuple;
 import cascading.tuple.TupleEntryCollector;
-
 import com.scaleunlimited.cascading.local.DirectoryTap;
 import com.scaleunlimited.cascading.scheme.local.SolrScheme;
+import org.apache.commons.io.FileUtils;
+import org.apache.hadoop.io.BytesWritable;
+import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.params.CommonParams;
+import org.apache.solr.common.params.ModifiableSolrParams;
+import org.apache.solr.core.CoreContainer;
+import org.junit.Assert;
+import org.junit.Before;
+
+import java.io.File;
+import java.io.IOException;
 
 public abstract class AbstractSolrSchemeTest extends Assert {
 
@@ -116,26 +114,27 @@ public abstract class AbstractSolrSchemeTest extends Assert {
         
         Tap source = makeSourceTap(testFields, in);
         TupleEntryCollector write = source.openForWrite(makeFlowProcess());
-        Tuple t = new Tuple();
-        t.add(1);
-        t.add("TurboWriter 2.3");
-        t.add(395.50f);
-        t.add(new Tuple("wordprocessor", "Japanese"));
-        t.add(true);
-        t.add(imageData);
-        write.add(t);
+        Tuple t1 = new Tuple();
+        t1.add(1);
+        t1.add("TurboWriter 2.3");
+        t1.add(395.50f);
+        t1.add(new Tuple("wordprocessor", "Japanese"));
+        t1.add(true);
+        t1.add(imageData);
+        write.add(t1);
         
-        t = new Tuple();
-        t.add(2);
-        t.add("Shasta 1.0");
-        t.add(95.00f);
-        t.add("Chinese");
-        t.add(false);
+        Tuple t2 = new Tuple();
+        t2.isUnmodifiable();
+        t2.add(2);
+        t2.add("Shasta 1.0");
+        t2.add(95.00f);
+        t2.add("Chinese");
+        t2.add(false);
         
         BytesWritable bw = new BytesWritable(imageData);
         bw.setCapacity(imageData.length + 10);
-        t.add(bw);
-        write.add(t);
+        t2.add(bw);
+        write.add(t2);
         write.close();
 
         // Now read from the results, and write to a Solr index.
@@ -148,9 +147,8 @@ public abstract class AbstractSolrSchemeTest extends Assert {
         // Open up the Solr index, and do some searches.
         System.setProperty("solr.solr.home", SOLR_HOME_DIR);
         System.setProperty("solr.data.dir", out + "/part-00000");
-        CoreContainer.Initializer initializer = new CoreContainer.Initializer();
-        CoreContainer coreContainer;
-        coreContainer = initializer.initialize();
+        CoreContainer coreContainer = new CoreContainer(SOLR_HOME_DIR);
+        coreContainer.load();
         SolrServer solrServer = new EmbeddedSolrServer(coreContainer, "");
 
         ModifiableSolrParams params = new ModifiableSolrParams();
