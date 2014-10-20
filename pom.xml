@@ -34,8 +34,8 @@
 	</repositories>
 	
     <properties>
-        <cascading.version>2.5.6</cascading.version>
-        <hadoop.version>1.2.1</hadoop.version>
+        <cascading.version>2.5.5</cascading.version>
+        <hadoop.version>2.2.0</hadoop.version>
         <solr.version>4.10.1</solr.version>
     </properties>
     
@@ -119,33 +119,16 @@
         </dependency>
 
         <!-- Provided -->
-        
-		<dependency>
+
+        <dependency>
             <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-core</artifactId>
+            <artifactId>hadoop-mapreduce-client-core</artifactId>
             <version>${hadoop.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-lang</groupId>
-                    <artifactId>commons-lang</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>commons-codec</groupId>
-                    <artifactId>commons-codec</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>ant</groupId>
-                    <artifactId>ant</artifactId>
-                </exclusion>
-            </exclusions>
             <scope>provided</scope>
         </dependency>
-        
-		<dependency>
+
+
+        <dependency>
             <groupId>ant-eclipse</groupId>
             <artifactId>ant-eclipse-jvm1.2</artifactId>
             <version>1.0</version>
